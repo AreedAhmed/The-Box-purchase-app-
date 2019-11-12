@@ -4,43 +4,101 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const timestamp = require('time-stamp');
 const googleSpreadsheet = require('google-spreadsheet');
-const { promisify } = require('util');
 const creds = require('./TheBox_JSON.json');
+const doc = new googleSpreadsheet('1yo9jH5YiZy5qAgXW6TqciZ-bGMCtvbAS1byhrziW93s');
 
-var sup = 0, recDate = 0, dockitno = 0;
+var sup = 0, recDate = 0, dockitno = 0,name = 0,job = 0,vat = 0;
 
 app.use(express.static('public'));
 
 io.on('connection', function (socket) {
+
+	socket.on('logcheck-Values',function(data){
+	var logged_userdata = data.logName_value;
+	var logged_password = data.logPass_value;
+		doc.useServiceAccountAuth(creds, function (err) {
+			doc.getRows(2, function (err, userrows) {
+				for (var i = 0; i < userrows.length; i++) {
+					if(logged_userdata == userrows[i].name && logged_password == userrows[i].password){
+						socket.emit('userTrueConfirmation');
+					}
+				}
+			});
+		});
+	});
+
+	socket.on('registering-Values', function(data){
+		doc.useServiceAccountAuth(creds, function (err) {
+			doc.addRow(2, { 
+			  TIMESTAMP:timestamp.utc('YYYY/MM/DD:mm:ss'),
+			  NAME:data.regName_value,
+			  PASSWORD: data.regPassConfirm_value,
+			}, function(err) {
+			if(err) {
+			  console.log(err);
+			}
+		  });
+	  });
+	});
+
 	socket.on('ui-Values', function (data) {
 		sup = data.sup_value;
 		recDate = data.date_value;
 		dockitno = data.docitno_value;
-		callSpreadSheet(sup,dockitno,recDate);
-		socket.emit('acknowledgement', {sup,recDate});
+		job = data.job_value;
+		vat = data.vat_value;
+		//console.log(job);
+		sendSheetData(sup,dockitno,recDate,job,vat);
+		socket.emit('acknowledgementOfStamping', {sup,recDate});
 	});
+
+	socket.on('ui-GetValues',function(){
+		getSheetData();
+	});
+	async function getSheetData(){	
+		doc.useServiceAccountAuth(creds, function (err) {
+			doc.getRows(1, function (err, rows) {
+				socket.emit('sendSheetRecords', {rows});
+			});
+		});
+	}
+
+	socket.on('record-del', function(data){
+		var delRow = data.delDockIt_value;
+		console.log(delRow);
+		doc.useServiceAccountAuth(creds, function (err) {
+			doc.getRows(1, function (err, rows) {
+				for (var i = 0; i < rows.length; i++) {
+					if(delRow == rows[i].dockno){
+						rows[i].del();
+						socket.emit('userDeleteConfirmation', {delRow});
+					}
+				}
+			});
+		});
+	});
+
 });
 
-async function callSpreadSheet(supp,dockitnoo,recDatee){
-	const doc = new googleSpreadsheet('1yo9jH5YiZy5qAgXW6TqciZ-bGMCtvbAS1byhrziW93s');
-    await promisify(doc.useServiceAccountAuth)(creds);
-    const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[0];
-	console.log(sheet.title);
-	console.log(sheet.rowcount);
-	
-	const row = {
-
-        NAME: 'Vasant',
+async function sendSheetData(supp,dockitnoo,recDatee,jobb,vatt){
+	doc.useServiceAccountAuth(creds, function (err) {
+	  doc.addRow(1, { 
+		TIMESTAMP:timestamp.utc('YYYY/MM/DD:mm:ss'),
+		//NAME:supp,
         SUPPLIER: supp,
         DOCK_NO:dockitnoo,
         DATE:recDatee,
-        VAT:'test',    
-        JOB:'test',
-        SAVE_DOCKET:'test'    
-	}
-	await promisify(sheet.addRow)(row); 
+        VAT:vatt,    
+        JOB:jobb,
+  		 }, function(err) {
+	  if(err) {
+	    console.log(err);
+	  }
+	});
+});
+	
 }
 
 http.listen(5000, function () {
