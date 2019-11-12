@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		 <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<title>Purchase App</title>
+		<link rel = "stylesheet" href = "index.css"></link>
+	</head>
+	<body>
+		<section>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>The Box</h1>
+				</div>
+				<div>
+					<input class = "logout" type="submit" value="Logout" onClick="parent.location='index.html'">
+				</div>
+			</div>
+			<div class="panel panel-default-purchase">
+				<div class="panel-heading">
+					<h3>Purchase Page</h3>
+				</div>
+				<div class="panel-body">
+					<form action="/">
+						<input id = "supp" type="text" name="supplier" placeholder="Supplier..."><br><br>
+						<input id = "docitno" type="number" name="dockitno" placeholder="DockIT No...."><br><br>
+						<input id = "date" type="date" id="start" name="purchaseAppDate" placeholder="2018-07-22"min="2018-01-01"><br><br>
+						<input id = "vat" type="number" name="vat" placeholder="Vat..."><br><br>
+						<input id = "job" type="text" name="job" placeholder="Job..."><br><br>
+						<div>
+							<input class = "pushToGoogleForm" type="submit" value="Send Data">
+						</div>
+					</form> 
+				</div>
+			</div>
+			<div class="panel panel-default-getData">
+				<div class="panel-heading">
+					<h3>Get Data</h3>
+				</div>
+				<div class="panel-body">
+					<div>
+						<input class = "getFromGoogleForm" type="submit" value="Get Data">
+					</div><br/>
+					<div>
+						<p id="showData"></p>
+					</div>
+				</div>
+			</div>
+		<div class="panel panel-default-delData">
+			<div class="panel-heading">
+				<h3>Delete Data</h3>
+			</div>
+			<div class="panel-body">
+				<div>
+					<input id = "delDoctit" type = "number" name = "delName" placeholder = "Enter DockIt No...">
+					<input class = "delRecord" type="submit" value="Delete">
+				</div>
+			</div>
+		</div>
+	</section>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src = "js/purchase.js"></script>
+	</body>
+</html>
