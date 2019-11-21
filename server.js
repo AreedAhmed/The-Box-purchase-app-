@@ -18,13 +18,15 @@ io.on('connection', function (socket) {
 	socket.on('logcheck-Values',function(data){
 	var logged_userdata = data.logName_value;
 	var logged_password = data.logPass_value;
+	var userVerification = false;
 		doc.useServiceAccountAuth(creds, function (err) {
 			doc.getRows(2, function (err, userrows) {
 				for (var i = 0; i < userrows.length; i++) {
 					if(logged_userdata == userrows[i].name && logged_password == userrows[i].password){
-						socket.emit('userTrueConfirmation');
+						userVerification = true;
 					}
 				}
+				socket.emit('userTrueConfirmation', {userVerification});
 			});
 		});
 	});
@@ -39,6 +41,9 @@ io.on('connection', function (socket) {
 			if(err) {
 			  console.log(err);
 			}
+			else{
+				socket.emit('registrationConfirmation');
+			}
 		  });
 	  });
 	});
@@ -49,7 +54,6 @@ io.on('connection', function (socket) {
 		dockitno = data.docitno_value;
 		job = data.job_value;
 		vat = data.vat_value;
-		//console.log(job);
 		sendSheetData(sup,dockitno,recDate,job,vat);
 		socket.emit('acknowledgementOfStamping', {sup,recDate});
 	});
@@ -67,15 +71,16 @@ io.on('connection', function (socket) {
 
 	socket.on('record-del', function(data){
 		var delRow = data.delDockIt_value;
-		console.log(delRow);
+		var delBool = false;
 		doc.useServiceAccountAuth(creds, function (err) {
 			doc.getRows(1, function (err, rows) {
 				for (var i = 0; i < rows.length; i++) {
 					if(delRow == rows[i].dockno){
 						rows[i].del();
-						socket.emit('userDeleteConfirmation', {delRow});
+						delBool = true;
 					}
 				}
+				socket.emit('userDeleteConfirmation', {delBool});
 			});
 		});
 	});
@@ -86,7 +91,6 @@ async function sendSheetData(supp,dockitnoo,recDatee,jobb,vatt){
 	doc.useServiceAccountAuth(creds, function (err) {
 	  doc.addRow(1, { 
 		TIMESTAMP:timestamp.utc('YYYY/MM/DD:mm:ss'),
-		//NAME:supp,
         SUPPLIER: supp,
         DOCK_NO:dockitnoo,
         DATE:recDatee,

@@ -13,6 +13,7 @@
     "google-spreadsheet": "^2.0.8",
     "http": "latest",
     "socket.io": "^2.3.0",
+    "sweetalert": "^2.1.2",
     "time-stamp": "^2.2.0",
     "utill": "^0.1.3"
   },
