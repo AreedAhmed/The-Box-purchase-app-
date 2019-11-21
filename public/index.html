@@ -3,40 +3,42 @@
 	<head>
 		<meta charset="UTF-8">
 		 <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-		<title>Login</title>
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/sweetalert2@7.8.2/dist/sweetalert2.all.js"></script>
+		<title>Purchase App</title>
 		<link rel = "stylesheet" href = "index.css"></link>
     </head>
     <body>
-        <section>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1>The Box</h1>
+        <div class = "container">
+            <h1 class = "font-weight-bold">The Box</h1>
+            <form action="purchase.html" method="post">
+                <div class="imgcontainer">
+                <img src="login.png" alt="Avatar" class="avatar">
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3>Login</h3>
+                <div align = "center" class="container">
+                        <h3>Login</h3>
+                        <hr>
+                    <div>
+                        <i class="fa fa-user icon"></i>
+                        <input id = "loginname" type="text" placeholder="Enter Username" value="Areed" name="uname" required>
+                    </div>
+                    <div>
+                        <i class="fa fa-key icon"></i>
+                        <input id = "loginpass" type="password" placeholder="Enter Password" value = "123" name="psw" required>
+                    </div>
+                    <div>
+                        <button class = "login" type="submit">Login</button>
+                    </div>
+                    <div>
+                        <a href = "registration.html">Sign Up?</a>
+                    </div>
                 </div>
-                <div class = "panel-body">
-                    <form action = "index.html" method = "post">
-                        <div>
-                            <input id = "loginname" type="text" name="loginname" placeholder="Name..."><br><br>
-                            <input id = "loginpass" type="password" name="pass" placeholder="Password..."><br><br>
-                        </div>
-                        <div>
-                            <input class = "login" type="submit" value="Login" onClick="parent.location='purchase.html'">
-                        </div>
-                        <br/>
-                        <div>
-                            <a href = "registration.html">New User?</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
+            </form>
+        </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src = "js/index.js"></script>
     </body>
